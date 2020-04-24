@@ -1,6 +1,14 @@
 doctrine:
     dbal:
         url: '%env(resolve:DATABASE_URL)%'
+        driver: 'pdo_pgsql'
+        server_version: '11.2'
+
+        types:
+            auth_user_id: 'Ramsey\Uuid\Doctrine\UuidType'
+            auth_user_email: 'App\Module\Auth\Entity\User\EmailType'
+            auth_user_role: 'App\Module\Auth\Entity\User\RoleType'
+            auth_user_status: 'App\Module\Auth\Entity\User\StatusType'
 
         # IMPORTANT: You MUST configure your server version,
         # either here or in the DATABASE_URL env var (see .env file)
@@ -10,9 +18,9 @@ doctrine:
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         auto_mapping: true
         mappings:
-            App:
+            Auth:
                 is_bundle: false
                 type: annotation
-                dir: '%kernel.project_dir%/src/Entity'
-                prefix: 'App\Entity'
-                alias: App
+                dir: '%kernel.project_dir%/src/Module/Auth/Entity/User'
+                prefix: 'App\Module\Auth\Entity\User'
+                alias: User

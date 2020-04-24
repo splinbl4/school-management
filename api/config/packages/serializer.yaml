@@ -1,0 +1,8 @@
+jms_serializer:
+    metadata:
+        auto_detection: false
+        debug: "%kernel.debug%"
+        directories:
+            JoinByEmailRequest:
+                namespace_prefix: "App\\Module\\Auth\\Command\\JoinByEmail\\Request"
+                path: "%kernel.project_dir%/src/Module/Auth/Resources/serializer"
