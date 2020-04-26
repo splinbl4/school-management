@@ -4,5 +4,5 @@ jms_serializer:
         debug: "%kernel.debug%"
         directories:
             JoinByEmailRequest:
-                namespace_prefix: "App\\Module\\Auth\\Command\\JoinByEmail\\Request"
-                path: "%kernel.project_dir%/src/Module/Auth/Resources/serializer"
+                namespace_prefix: "App\\Module\\User\\Command\\JoinByEmail\\Request"
+                path: "%kernel.project_dir%/src/Module/User/Resources/serializer"

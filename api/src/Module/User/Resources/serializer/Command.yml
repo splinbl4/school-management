@@ -1,0 +1,11 @@
+App\Module\User\Command\JoinByEmail\Request\Command:
+    exclusion_policy: ALL
+    properties:
+        email:
+            type: string
+        password:
+            type: string
+        firstName:
+            type: string
+        lastName:
+            type: string

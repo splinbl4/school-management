@@ -5,10 +5,12 @@ doctrine:
         server_version: '11.2'
 
         types:
-            auth_user_id: 'Ramsey\Uuid\Doctrine\UuidType'
-            auth_user_email: 'App\Module\Auth\Entity\User\EmailType'
-            auth_user_role: 'App\Module\Auth\Entity\User\RoleType'
-            auth_user_status: 'App\Module\Auth\Entity\User\StatusType'
+            user_user_id: 'Ramsey\Uuid\Doctrine\UuidType'
+            user_user_email: 'App\Module\User\Entity\User\EmailType'
+            user_user_role: 'App\Module\User\Entity\User\RoleType'
+            user_user_status: 'App\Module\User\Entity\User\StatusType'
+            company_company_id: 'Ramsey\Uuid\Doctrine\UuidType'
+            company_company_status: 'App\Module\Company\Entity\Company\StatusType'
 
         # IMPORTANT: You MUST configure your server version,
         # either here or in the DATABASE_URL env var (see .env file)
@@ -18,9 +20,15 @@ doctrine:
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         auto_mapping: true
         mappings:
-            Auth:
+            User:
                 is_bundle: false
                 type: annotation
-                dir: '%kernel.project_dir%/src/Module/Auth/Entity/User'
-                prefix: 'App\Module\Auth\Entity\User'
+                dir: '%kernel.project_dir%/src/Module/User/Entity/User'
+                prefix: 'App\Module\User\Entity\User'
+                alias: User
+            Company:
+                is_bundle: false
+                type: annotation
+                dir: '%kernel.project_dir%/src/Module/Company/Entity/Company'
+                prefix: 'App\Module\Company\Entity\Company'
                 alias: User
