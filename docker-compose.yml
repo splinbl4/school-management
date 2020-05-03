@@ -7,9 +7,11 @@ services:
     ports:
       - "8080:8080"
       - "8081:8081"
+      - "8082:8082"
     depends_on:
       - frontend
       - api
+      - mailer
 
   frontend:
     build:
@@ -35,6 +37,13 @@ services:
       APP_ENV: dev
       APP_DEBUG: 1
       PHP_IDE_CONFIG: serverName=API
+      MAILER_HOST: mailer
+      MAILER_PORT: 1025
+      MAILER_USER: app
+      MAILER_PASSWORD: secret
+      MAILER_ENCRYPTION: tcp
+      MAILER_FROM_EMAIL: mail@app.test
+      FRONTEND_URL: http://localhost:8080
     volumes:
       - ./api:/app
 
@@ -45,6 +54,13 @@ services:
     environment:
       APP_ENV: dev
       APP_DEBUG: 1
+      MAILER_HOST: mailer
+      MAILER_PORT: 1025
+      MAILER_USER: app
+      MAILER_PASSWORD: secret
+      MAILER_ENCRYPTION: tcp
+      MAILER_FROM_EMAIL: mail@app.test
+      FRONTEND_URL: http://localhost:8080
     volumes:
       - ./api:/app
 
@@ -61,8 +77,6 @@ services:
 
   mailer:
     image: mailhog/mailhog
-    ports:
-      - "8082:8025"
 
 volumes:
   sm-postgres:

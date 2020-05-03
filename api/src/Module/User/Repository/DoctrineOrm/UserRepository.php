@@ -44,6 +44,15 @@ class UserRepository implements UserRepositoryInterface
                 ->getQuery()->getSingleScalarResult() > 0;
     }
 
+    /**
+     * @param string $token
+     * @return User|object|null
+     */
+    public function findByJoinConfirmToken(string $token): ?User
+    {
+        return $this->repo->findOneBy(['joinConfirmToken.value' => $token]);
+    }
+
     public function add(User $user): void
     {
         $this->em->persist($user);

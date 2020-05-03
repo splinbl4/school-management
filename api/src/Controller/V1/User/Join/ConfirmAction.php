@@ -1,26 +1,23 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Controller\V1\User\Join;
 
-use App\Module\User\Command\JoinByEmail\Request\Command;
-use App\Module\User\Command\JoinByEmail\Request\Handler;
+use App\Module\User\Command\JoinByEmail\Confirm\Command;
+use App\Module\User\Command\JoinByEmail\Confirm\Handler;
 use App\Validation\ValidationErrorsBuilder;
 use FOS\RestBundle\View\View;
 use JMS\Serializer\SerializerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
- * Class RequestAction
+ * Class ConfirmAction
  * @package App\Controller\V1\User\Join
  */
-class RequestAction extends AbstractController
+class ConfirmAction extends AbstractController
 {
     private ValidatorInterface $validator;
 
@@ -39,31 +36,20 @@ class RequestAction extends AbstractController
     }
 
     /**
-     * @Route("/auth/join", name="auth.join", methods={"POST"})
+     * @Route("/auth/join/confirm/{token}", name="auth.join.confirm", methods={"POST"})
      *
-     * @ParamConverter(
-     *     "command",
-     *     converter="fos_rest.request_body"
-     * )
-     *
-     * @param Command $command
-     * @param ConstraintViolationListInterface $validationErrors
+     * @param string $token
      * @param Handler $handler
      * @return View
      */
     public function handle(
-        Command $command,
-        ConstraintViolationListInterface $validationErrors,
+        string $token,
         Handler $handler
-    ): View {
-        $errors = $this->validationErrorsBuilder->build($validationErrors);
-
-        if (!empty($errors)) {
-            return View::create($errors, Response::HTTP_BAD_REQUEST);
-        }
-
+    )
+    {
+        $command = new Command($token);
         $handler->handle($command);
 
-        return View::create([], Response::HTTP_CREATED);
+        return View::create([], Response::HTTP_OK);
     }
 }
