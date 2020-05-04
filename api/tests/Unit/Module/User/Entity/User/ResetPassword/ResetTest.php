@@ -29,7 +29,7 @@ class ResetTest extends TestCase
 
         self::assertNotNull($user->getPasswordResetToken());
 
-        $user->resetPassword($token->getValue(), $hash, $now, $hasher);
+        $user->resetPassword($token->getValue(), 'new-password', $now, $hasher);
 
         self::assertNull($user->getPasswordResetToken());
         self::assertEquals($hash, $user->getPasswordHash());
@@ -47,7 +47,7 @@ class ResetTest extends TestCase
         $user->requestPasswordReset($token, $now);
 
         $this->expectExceptionMessage('Token is invalid.');
-        $user->resetPassword(Uuid::uuid4()->toString(), $hash, $now, $hasher);
+        $user->resetPassword(Uuid::uuid4()->toString(), 'new-password', $now, $hasher);
     }
 
     public function testExpiredToken(): void
@@ -62,7 +62,7 @@ class ResetTest extends TestCase
         $user->requestPasswordReset($token, $now);
 
         $this->expectExceptionMessage('Token is expired.');
-        $user->resetPassword($token->getValue(), $hash, $now->modify('+1 day'), $hasher);
+        $user->resetPassword($token->getValue(), 'new-password', $now->modify('+1 day'), $hasher);
     }
 
     public function testNotRequested(): void
@@ -74,7 +74,7 @@ class ResetTest extends TestCase
         $hasher = $this->createHasher(true, $hash);
 
         $this->expectExceptionMessage('Resetting is not requested.');
-        $user->resetPassword(Uuid::uuid4()->toString(), $hash, $now, $hasher);
+        $user->resetPassword(Uuid::uuid4()->toString(), 'new-password', $now, $hasher);
     }
 
     private function createToken(DateTimeImmutable $date): Token

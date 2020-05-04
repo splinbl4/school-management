@@ -256,9 +256,11 @@ class User
         if ($this->joinConfirmToken && $this->joinConfirmToken->isEmpty()) {
             $this->joinConfirmToken = null;
         }
+
         if ($this->passwordResetToken && $this->passwordResetToken->isEmpty()) {
             $this->passwordResetToken = null;
         }
+
         if ($this->newEmailToken && $this->newEmailToken->isEmpty()) {
             $this->newEmailToken = null;
         }
@@ -282,8 +284,18 @@ class User
         if ($this->passwordResetToken === null) {
             throw new DomainException('Resetting is not requested.');
         }
+
         $this->passwordResetToken->validate($token, $date);
         $this->passwordResetToken = null;
         $this->passwordHash = $hasher->hash($password);
+    }
+
+    public function changePassword(string $current, string $new, PasswordHasher $hasher)
+    {
+        if (!$hasher->validate($current, $this->passwordHash)) {
+            throw new DomainException('Incorrect current password.');
+        }
+
+        $this->passwordHash = $hasher->hash($new);
     }
 }

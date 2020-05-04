@@ -31,15 +31,14 @@ class Handler
         Tokenizer $tokenizer,
         Flusher $flusher,
         PasswordResetTokenSender $sender
-    )
-    {
+    ) {
         $this->userRepository = $userRepository;
         $this->tokenizer = $tokenizer;
         $this->flusher = $flusher;
         $this->sender = $sender;
     }
 
-    public function handle(Command $command)
+    public function handle(Command $command): void
     {
         $email = new Email($command->email);
 

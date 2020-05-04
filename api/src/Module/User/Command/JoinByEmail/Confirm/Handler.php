@@ -33,7 +33,7 @@ class Handler
     /**
      * @param Command $command
      */
-    public function handle(Command $command)
+    public function handle(Command $command): void
     {
         $user = $this->userRepository->findByJoinConfirmToken($command->token);
         if (!$user instanceof User) {

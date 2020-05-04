@@ -20,7 +20,6 @@ class RequestTest extends TestCase
         $user = (new UserBuilder())->active()->build();
 
         $now = new DateTimeImmutable();
-//        $token = $this->createToken($now->modify('+1 hour'));
         $token = $this->createToken($now->modify('+1 hour'));
 
         $user->requestPasswordReset($token, $now);
@@ -29,7 +28,7 @@ class RequestTest extends TestCase
         self::assertEquals($token, $user->getPasswordResetToken());
     }
 
-    public function testExpired()
+    public function testExpired(): void
     {
         $user = (new UserBuilder())->active()->build();
 

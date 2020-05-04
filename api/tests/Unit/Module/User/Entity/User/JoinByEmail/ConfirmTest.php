@@ -33,7 +33,7 @@ class ConfirmTest extends TestCase
         self::assertNull($user->getJoinConfirmToken());
     }
 
-    public function testWrong()
+    public function testWrong(): void
     {
         $token = $this->createToken();
 
@@ -49,7 +49,7 @@ class ConfirmTest extends TestCase
         );
     }
 
-    public function testExpired()
+    public function testExpired(): void
     {
         $token = $this->createToken();
 
@@ -65,7 +65,7 @@ class ConfirmTest extends TestCase
         );
     }
 
-    public function testAlready()
+    public function testAlready(): void
     {
         $token = $this->createToken();
 

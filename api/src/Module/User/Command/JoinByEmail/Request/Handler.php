@@ -67,7 +67,7 @@ class Handler
     /**
      * @param Command $command
      */
-    public function handle(Command $command)
+    public function handle(Command $command): void
     {
         $email = new Email($command->email);
 

@@ -1,18 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Module\User\Command\ResetPassword\Reset;
+namespace App\Module\User\Command\ChangePassword;
 
 use App\Module\Flusher;
-use App\Module\User\Entity\User\User;
+use App\Module\User\Entity\User\Id;
 use App\Module\User\Repository\UserRepositoryInterface;
 use App\Module\User\Service\PasswordHasher;
-use DateTimeImmutable;
-use DomainException;
 
 /**
  * Class Handler
- * @package App\Module\User\Command\ResetPassword\Reset
+ * @package App\Module\User\Command\ChangePassword
  */
 class Handler
 {
@@ -32,17 +30,13 @@ class Handler
         $this->flusher = $flusher;
     }
 
-    public function handler(Command $command): void
+    public function handle(Command $command): void
     {
-        $user = $this->userRepository->findByPasswordResetToken($command->token);
-        if (!$user instanceof User) {
-            throw new DomainException('Token is not found.');
-        }
+        $user = $this->userRepository->get(new Id($command->id));
 
-        $user->resetPassword(
-            $command->token,
-            $command->password,
-            new DateTimeImmutable(),
+        $user->changePassword(
+            $command->current,
+            $command->new,
             $this->passwordHasher
         );
 

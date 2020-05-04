@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Module\User\Repository\DoctrineOrm;
 
 use App\Module\User\Entity\User\Email;
+use App\Module\User\Entity\User\Id;
 use App\Module\User\Entity\User\User;
 use App\Module\User\Repository\UserRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -76,6 +77,19 @@ class UserRepository implements UserRepositoryInterface
     public function findByPasswordResetToken(string $token): ?User
     {
         return $this->repo->findOneBy(['passwordResetToken.value' => $token]);
+    }
+
+    /**
+     * @param Id $id
+     * @return User|object|null
+     */
+    public function get(Id $id): User
+    {
+        if (!$user = $this->repo->find($id->getValue())) {
+            throw new DomainException('User is not found.');
+        }
+
+        return $user;
     }
 
     public function add(User $user): void
