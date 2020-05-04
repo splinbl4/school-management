@@ -266,7 +266,7 @@ class User
         }
     }
 
-    public function requestPasswordReset(Token $token, DateTimeImmutable $date)
+    public function requestPasswordReset(Token $token, DateTimeImmutable $date): void
     {
         if (!$this->isActive()) {
             throw new DomainException('User is not active.');
@@ -290,12 +290,41 @@ class User
         $this->passwordHash = $hasher->hash($password);
     }
 
-    public function changePassword(string $current, string $new, PasswordHasher $hasher)
+    public function changePassword(string $current, string $new, PasswordHasher $hasher): void
     {
         if (!$hasher->validate($current, $this->passwordHash)) {
             throw new DomainException('Incorrect current password.');
         }
 
         $this->passwordHash = $hasher->hash($new);
+    }
+
+    public function requestEmailChanging(Token $token, DateTimeImmutable $date, Email $email): void
+    {
+        if (!$this->isActive()) {
+            throw new DomainException('User is not active.');
+        }
+
+        if ($this->email->isEqualTo($email)) {
+            throw new DomainException('Email is already same.');
+        }
+
+        if ($this->newEmailToken !== null && !$this->newEmailToken->isExpiredTo($date)) {
+            throw new DomainException('Changing is already requested.');
+        }
+
+        $this->newEmail = $email;
+        $this->newEmailToken = $token;
+    }
+
+    public function confirmEmailChanging(string $token, DateTimeImmutable $date): void
+    {
+        if ($this->newEmail === null || $this->newEmailToken === null) {
+            throw new DomainException('Changing is not requested.');
+        }
+        $this->newEmailToken->validate($token, $date);
+        $this->email = $this->newEmail;
+        $this->newEmail = null;
+        $this->newEmailToken = null;
     }
 }

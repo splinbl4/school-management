@@ -92,6 +92,15 @@ class UserRepository implements UserRepositoryInterface
         return $user;
     }
 
+    /**
+     * @param string $token
+     * @return User|object|null
+     */
+    public function findByNewEmailToken(string $token): ?User
+    {
+        return $this->repo->findOneBy(['newEmailToken.value' => $token]);
+    }
+
     public function add(User $user): void
     {
         $this->em->persist($user);

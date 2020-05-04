@@ -24,7 +24,7 @@ class ChangePasswordTest extends TestCase
         self::assertEquals($user->getPasswordHash(), $hash);
     }
 
-    public function testWrongCurrent(): void 
+    public function testWrongCurrent(): void
     {
         $user = (new UserBuilder())->active()->build();
         $hash = 'new-hash';
