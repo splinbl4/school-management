@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Module\User\Entity\User;
 
 use App\Module\Company\Entity\Company\Company;
+use App\Module\User\Service\PasswordHasher;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use DomainException;
@@ -241,6 +242,7 @@ class User
         if ($this->joinConfirmToken === null) {
             throw new DomainException('Confirmation is not required.');
         }
+
         $this->joinConfirmToken->validate($token, $date);
         $this->status = Status::active();
         $this->joinConfirmToken = null;
@@ -260,5 +262,28 @@ class User
         if ($this->newEmailToken && $this->newEmailToken->isEmpty()) {
             $this->newEmailToken = null;
         }
+    }
+
+    public function requestPasswordReset(Token $token, DateTimeImmutable $date)
+    {
+        if (!$this->isActive()) {
+            throw new DomainException('User is not active.');
+        }
+
+        if ($this->passwordResetToken !== null && !$this->passwordResetToken->isExpiredTo($date)) {
+            throw new DomainException('Resetting is already requested.');
+        }
+
+        $this->passwordResetToken = $token;
+    }
+
+    public function resetPassword(string $token, string $password, DateTimeImmutable $date, PasswordHasher $hasher): void
+    {
+        if ($this->passwordResetToken === null) {
+            throw new DomainException('Resetting is not requested.');
+        }
+        $this->passwordResetToken->validate($token, $date);
+        $this->passwordResetToken = null;
+        $this->passwordHash = $hasher->hash($password);
     }
 }

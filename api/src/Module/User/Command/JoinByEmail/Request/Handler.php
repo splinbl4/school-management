@@ -9,6 +9,7 @@ use App\Module\User\Entity\User\Name;
 use App\Module\User\Entity\User\Role;
 use App\Module\User\Entity\User\User;
 use App\Module\User\Repository\UserRepositoryInterface;
+use App\Module\User\Service\JoinConfirmationSender;
 use App\Module\User\Service\PasswordHasher;
 use App\Module\User\Service\Tokenizer;
 use App\Module\Company\Entity\Company\Company;
@@ -33,6 +34,10 @@ class Handler
     private Tokenizer $tokenizer;
 
     private PasswordHasher $passwordHasher;
+    /**
+     * @var JoinConfirmationSender
+     */
+    private JoinConfirmationSender $sender;
 
     /**
      * Handler constructor.
@@ -41,19 +46,22 @@ class Handler
      * @param Flusher $flusher
      * @param Tokenizer $tokenizer
      * @param PasswordHasher $passwordHasher
+     * @param JoinConfirmationSender $sender
      */
     public function __construct(
         UserRepositoryInterface $userRepository,
         CompanyRepositoryInterface $companyRepository,
         Flusher $flusher,
         Tokenizer $tokenizer,
-        PasswordHasher $passwordHasher
+        PasswordHasher $passwordHasher,
+        JoinConfirmationSender $sender
     ) {
         $this->userRepository = $userRepository;
         $this->companyRepository = $companyRepository;
         $this->flusher = $flusher;
         $this->tokenizer = $tokenizer;
         $this->passwordHasher = $passwordHasher;
+        $this->sender = $sender;
     }
 
     /**
@@ -69,6 +77,7 @@ class Handler
 
         $date = new DateTimeImmutable();
         $company = new Company(IdCompany::generate());
+        $token = $this->tokenizer->generate($date);
 
         $user = User::joinByEmail(
             Id::generate(),
@@ -78,11 +87,13 @@ class Handler
             $company,
             new Email($command->email),
             $this->passwordHasher->hash($command->password),
-            $this->tokenizer->generate($date)
+            $token
         );
 
         $this->companyRepository->add($company);
         $this->userRepository->add($user);
         $this->flusher->flush();
+
+        $this->sender->send($email, $token);
     }
 }

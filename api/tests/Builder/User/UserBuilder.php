@@ -12,6 +12,7 @@ use App\Module\User\Entity\User\Role;
 use App\Module\User\Entity\User\Token;
 use App\Module\User\Entity\User\User;
 use DateTimeImmutable;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Class UserBuilder
@@ -40,6 +41,7 @@ class UserBuilder
         $this->name = new Name('First', 'Last');
         $this->email = new Email('mail@app.test');
         $this->hash = 'hash';
+        $this->joinConfirmToken = new Token(Uuid::uuid4()->toString(), $this->date->modify('+1 day'));
     }
 
     public function withJoinConfirmToken(Token $token): self

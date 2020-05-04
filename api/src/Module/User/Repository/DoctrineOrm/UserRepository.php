@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Laminas\EventManager\Exception\DomainException;
 
 /**
  * Class UserRepository
@@ -51,6 +52,30 @@ class UserRepository implements UserRepositoryInterface
     public function findByJoinConfirmToken(string $token): ?User
     {
         return $this->repo->findOneBy(['joinConfirmToken.value' => $token]);
+    }
+
+    /**
+     * @param Email $email
+     * @return User
+     */
+    public function getByEmail(Email $email): User
+    {
+        $user = $this->repo->findOneBy(['email' => $email->getValue()]);
+
+        if (!$user instanceof User) {
+            throw new DomainException('User is not found.');
+        }
+
+        return $user;
+    }
+
+    /**
+     * @param string $token
+     * @return User|object|null
+     */
+    public function findByPasswordResetToken(string $token): ?User
+    {
+        return $this->repo->findOneBy(['passwordResetToken.value' => $token]);
     }
 
     public function add(User $user): void
