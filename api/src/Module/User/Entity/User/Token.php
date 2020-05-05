@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Module\User\Entity\User;
@@ -7,7 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
 use DateTimeImmutable;
 use DomainException;
 use Webmozart\Assert\Assert;
-
 
 /**
  * Class Token

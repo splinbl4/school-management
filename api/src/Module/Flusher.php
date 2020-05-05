@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Module;
@@ -18,7 +19,7 @@ class Flusher
         $this->entityManager = $entityManager;
     }
 
-    public function flush()
+    public function flush(): void
     {
         $this->entityManager->flush();
     }

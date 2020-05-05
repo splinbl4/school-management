@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Tests\Builder\User;
@@ -34,6 +35,8 @@ class UserBuilder
 
     private bool $active = false;
 
+    private bool $isCreate = false;
+
     public function __construct()
     {
         $this->id = Id::generate();
@@ -67,10 +70,26 @@ class UserBuilder
         return $clone;
     }
 
+    public function viaCreate(): self
+    {
+        $clone = clone $this;
+        $clone->isCreate = true;
+        return $clone;
+    }
 
     public function build(): User
     {
         $company = new Company(CompanyId::generate());
+
+        if ($this->isCreate) {
+            return User::create(
+                $this->id,
+                $this->date,
+                $this->name,
+                Role::user(),
+                $company
+            );
+        }
 
         $user = User::joinByEmail(
             $this->id,

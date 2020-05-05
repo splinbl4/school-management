@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Module\Company\Repository\DoctrineOrm;
@@ -16,11 +17,15 @@ class CompanyRepository implements CompanyRepositoryInterface
 {
     private EntityManagerInterface $em;
 
+    /**
+     * @var EntityRepository
+     */
     private EntityRepository $repo;
 
     public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
+        /** @var EntityRepository $this->repo */
         $this->repo = $em->getRepository(Company::class);
     }
 

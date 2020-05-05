@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Tests\Unit\Module\User\Entity\User\ChangeEmail;
@@ -81,6 +82,19 @@ class RequestTest extends TestCase
 
         self::assertEquals($newToken, $user->getNewEmailToken());
         self::assertEquals($newEmail, $user->getNewEmail());
+    }
+
+    public function testByCreate(): void
+    {
+        $user = (new UserBuilder())->viaCreate()->build();
+
+        $now = new DateTimeImmutable();
+        $token = $this->createToken($now->modify('+1 day'));
+        $newEmail = new Email('new-email@app.test');
+
+        $this->expectExceptionMessage('User does not have an old email.');
+
+        $user->requestEmailChanging($token, $now, $newEmail);
     }
 
     public function testNotActive(): void

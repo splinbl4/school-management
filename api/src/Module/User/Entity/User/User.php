@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Module\User\Entity\User;
@@ -30,12 +31,12 @@ class User
     /**
      * @ORM\Column(type="user_user_email", unique=true)
      */
-    private ?Email $email;
+    private ?Email $email = null;
 
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    private string $passwordHash;
+    private ?string $passwordHash = null;
 
     /**
      * @ORM\Column(type="datetime_immutable")
@@ -95,6 +96,7 @@ class User
         $this->name = $name;
         $this->role = $role;
         $this->company = $company;
+        $this->status = Status::wait();
     }
 
     public static function joinByEmail(
@@ -109,7 +111,6 @@ class User
     ): self {
         $user = new self($id, $date, $name, $role, $company);
         $user->email = $email;
-        $user->status = Status::wait();
         $user->passwordHash = $hash;
         $user->joinConfirmToken = $token;
 
@@ -148,9 +149,9 @@ class User
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getPasswordHash(): string
+    public function getPasswordHash(): ?string
     {
         return $this->passwordHash;
     }
@@ -279,8 +280,12 @@ class User
         $this->passwordResetToken = $token;
     }
 
-    public function resetPassword(string $token, string $password, DateTimeImmutable $date, PasswordHasher $hasher): void
-    {
+    public function resetPassword(
+        string $token,
+        string $password,
+        DateTimeImmutable $date,
+        PasswordHasher $hasher
+    ): void {
         if ($this->passwordResetToken === null) {
             throw new DomainException('Resetting is not requested.');
         }
@@ -292,6 +297,9 @@ class User
 
     public function changePassword(string $current, string $new, PasswordHasher $hasher): void
     {
+        if ($this->passwordHash === null) {
+            throw new DomainException('User does not have an old password.');
+        }
         if (!$hasher->validate($current, $this->passwordHash)) {
             throw new DomainException('Incorrect current password.');
         }
@@ -303,6 +311,10 @@ class User
     {
         if (!$this->isActive()) {
             throw new DomainException('User is not active.');
+        }
+
+        if ($this->email === null) {
+            throw new DomainException('User does not have an old email.');
         }
 
         if ($this->email->isEqualTo($email)) {

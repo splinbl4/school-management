@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Tests\Unit\Module\User\Entity\User;
@@ -33,6 +34,20 @@ class ChangePasswordTest extends TestCase
         $this->expectExceptionMessage('Incorrect current password.');
 
         $user->changePassword('wrong-old-password', 'new-password', $hasher);
+    }
+
+    public function testByCreate(): void
+    {
+        $user = (new UserBuilder())->viaCreate()->build();
+
+        $hasher = $this->createHasher(false, 'new-hash');
+
+        $this->expectExceptionMessage('User does not have an old password.');
+        $user->changePassword(
+            'any-old-password',
+            'new-password',
+            $hasher
+        );
     }
 
     private function createHasher(bool $valid, string $hash): PasswordHasher

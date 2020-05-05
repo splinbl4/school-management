@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Module\User\Repository\DoctrineOrm;
@@ -20,14 +21,13 @@ use Laminas\EventManager\Exception\DomainException;
 class UserRepository implements UserRepositoryInterface
 {
     private EntityManagerInterface $em;
-    /**
-     * @var EntityRepository
-     */
-    private $repo;
+
+    private EntityRepository $repo;
 
     public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
+        /** @psalm-var EntityRepository */
         $this->repo = $em->getRepository(User::class);
     }
 
@@ -49,9 +49,11 @@ class UserRepository implements UserRepositoryInterface
     /**
      * @param string $token
      * @return User|object|null
+     * @psalm-return User|null
      */
     public function findByJoinConfirmToken(string $token): ?User
     {
+        /** @psalm-var User|null */
         return $this->repo->findOneBy(['joinConfirmToken.value' => $token]);
     }
 
@@ -73,19 +75,22 @@ class UserRepository implements UserRepositoryInterface
     /**
      * @param string $token
      * @return User|object|null
+     * @psalm-return User|null
      */
     public function findByPasswordResetToken(string $token): ?User
     {
+        /** @psalm-var User|null */
         return $this->repo->findOneBy(['passwordResetToken.value' => $token]);
     }
 
     /**
      * @param Id $id
-     * @return User|object|null
+     * @return User
      */
     public function get(Id $id): User
     {
-        if (!$user = $this->repo->find($id->getValue())) {
+        $user = $this->repo->find($id->getValue());
+        if (!$user instanceof User) {
             throw new DomainException('User is not found.');
         }
 
@@ -95,9 +100,11 @@ class UserRepository implements UserRepositoryInterface
     /**
      * @param string $token
      * @return User|object|null
+     * @psalm-return User|null
      */
     public function findByNewEmailToken(string $token): ?User
     {
+        /** @psalm-var User|null */
         return $this->repo->findOneBy(['newEmailToken.value' => $token]);
     }
 

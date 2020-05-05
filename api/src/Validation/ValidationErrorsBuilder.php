@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Validation;
@@ -7,6 +8,10 @@ use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
+/**
+ * Class ValidationErrorsBuilder
+ * @package App\Validation
+ */
 class ValidationErrorsBuilder
 {
     /**
@@ -23,7 +28,10 @@ class ValidationErrorsBuilder
         }
 
         $violationHash = [];
-        /** @var ConstraintViolationInterface $validationError */
+        /**
+         * @var ConstraintViolationInterface $validationError
+         * @psalm-suppress UndefinedDocblockClass
+         */
         foreach ($unitedList as $validationError) {
             $violationHash[$validationError->getPropertyPath()]['errors'][] = $validationError->getMessage();
         }

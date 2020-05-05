@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Module\User\Entity\User;
@@ -35,7 +36,7 @@ class Status
         return new self(self::ACTIVE);
     }
 
-    public function isWait()
+    public function isWait(): bool
     {
         return $this->name === self::WAIT;
     }

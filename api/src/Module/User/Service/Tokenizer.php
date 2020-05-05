@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Module\User\Service;
@@ -21,7 +22,7 @@ class Tokenizer
         $this->interval = $interval;
     }
 
-    public function generate(DateTimeImmutable $date)
+    public function generate(DateTimeImmutable $date): Token
     {
         return new Token(
             Uuid::uuid4()->toString(),

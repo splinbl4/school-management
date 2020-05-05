@@ -37,6 +37,16 @@ api-migrations:
 api-validate-schema:
 	docker-compose run --rm api-php-cli php bin/console doctrine:schema:validate
 
+api-lint:
+	docker-compose run --rm api-php-cli composer lint
+	docker-compose run --rm api-php-cli composer cs-check
+
+api-analyze:
+	docker-compose run --rm api-php-cli composer psalm
+
+api-test:
+	docker-compose run --rm api-php-cli php bin/phpunit
+
 build: build-gateway build-frontend build-api
 
 build-gateway:

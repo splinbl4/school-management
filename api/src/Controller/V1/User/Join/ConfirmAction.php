@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controller\V1\User\Join;
@@ -45,8 +46,7 @@ class ConfirmAction extends AbstractController
     public function handle(
         string $token,
         Handler $handler
-    )
-    {
+    ) {
         $command = new Command($token);
         $handler->handle($command);
 
