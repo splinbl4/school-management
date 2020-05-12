@@ -35,3 +35,14 @@ services:
     App\Module\User\Service\Tokenizer:
         factory: ['App\Container\Module\User\Service\TokenizerFactory', 'create']
         arguments: ['PT1H']
+
+    Finesse\SwiftMailerDefaultsPlugin\SwiftMailerDefaultsPlugin:
+        arguments:
+            $defaults:
+                from:
+                    '%env(MAILER_FROM_EMAIL)%': '%env(MAILER_FROM_NAME)%'
+        tags:
+            - { name: swiftmailer.default.plugin }
+
+    App\Twig\FrontendUrlGenerator:
+        arguments: ['%env(FRONTEND_URL)%']
