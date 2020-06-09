@@ -1,0 +1,4 @@
+certbot_email: mail@school-management.site
+certbot_hosts:
+    - school-management.site
+    - api.school-management.site
